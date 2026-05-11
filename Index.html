@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Pine Labs | Franchise India Expo Survey</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pine-green:      #003323;
+    --pine-green-mid:  #004d34;
+    --pine-green-deep: #002419;
+    --pine-mint:       #50D387;
+    --pine-mint-light: rgba(80,211,135,0.10);
+    --pine-mint-bd:    rgba(80,211,135,0.28);
+    --white:      #FFFFFF;
+    --off-white:  #F4F9F6;
+    --text-dark:  #003323;
+    --text-muted: #5a7a6b;
+    --text-sub:   #4a6b5a;
+    --border:     #cce3d6;
+    --border-focus: #50D387;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--off-white);
+    color: var(--text-dark);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--pine-green);
+    padding: 0 40px;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 70px; position: sticky; top: 0; z-index: 100;
+    border-bottom: 1px solid rgba(80,211,135,0.15);
+  }
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .logo-icon { width: 32px; height: 32px; flex-shrink: 0; }
+  .logo-text { font-size: 20px; font-weight: 800; color: #fff; letter-spacing: -0.3px; }
+  .logo-text em { font-style: normal; color: var(--pine-mint); }
+  .expo-tag {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.5px;
+    background: rgba(80,211,135,0.12); color: var(--pine-mint);
+    border: 1px solid rgba(80,211,135,0.3); border-radius: 20px; padding: 5px 14px;
+  }
+
+  /* PRIZE BANNER */
+  .prize-banner {
+    background: var(--pine-mint); padding: 11px 40px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .prize-banner p { font-size: 13px; color: var(--pine-green); font-weight: 700; text-align: center; }
+
+  /* PROGRESS */
+  .progress-wrap {
+    background: var(--white); border-bottom: 1px solid var(--border);
+    padding: 14px 40px; display: flex; align-items: center; gap: 16px;
+  }
+  .progress-bar-bg { flex: 1; height: 4px; background: #d8eee3; border-radius: 10px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; background: var(--pine-mint); border-radius: 10px; transition: width 0.45s cubic-bezier(0.4,0,0.2,1); }
+  .progress-label { font-size: 12px; color: var(--text-muted); white-space: nowrap; font-weight: 600; }
+  .section-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--pine-green); font-weight: 700; white-space: nowrap; }
+
+  /* MAIN */
+  main { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 36px 16px 80px; }
+  .survey-card {
+    width: 100%; max-width: 680px; border-radius: 16px;
+    border: 1px solid var(--border); overflow: hidden;
+    background: var(--white); box-shadow: 0 4px 28px rgba(0,51,35,0.09);
+  }
+
+  /* CARD HEADER */
+  .card-header {
+    background: var(--pine-green); padding: 30px 40px;
+    position: relative; overflow: hidden;
+  }
+  .card-header::after {
+    content: ''; position: absolute; bottom: -20px; right: -20px;
+    width: 120px; height: 120px; border-radius: 50%;
+    background: rgba(80,211,135,0.08); pointer-events: none;
+  }
+  .section-tag {
+    display: inline-block; background: rgba(80,211,135,0.15); color: var(--pine-mint);
+    font-size: 10px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase;
+    border-radius: 20px; padding: 4px 14px; margin-bottom: 12px;
+    border: 1px solid rgba(80,211,135,0.3);
+  }
+  .card-header h2 { font-size: 22px; font-weight: 800; color: #fff; letter-spacing: -0.4px; line-height: 1.3; }
+  .card-header p { font-size: 13px; color: rgba(255,255,255,0.5); margin-top: 6px; }
+  .card-body { padding: 30px 40px; }
+
+  /* STEPS */
+  .step { display: none; }
+  .step.active { display: block; animation: fadeUp 0.25s ease; }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+  .q-block { margin-bottom: 28px; }
+  .q-block:last-child { margin-bottom: 0; }
+  .question-label { font-size: 15px; font-weight: 600; color: var(--text-dark); margin-bottom: 16px; line-height: 1.5; }
+  .question-sub { font-size: 12px; color: var(--text-muted); font-style: italic; margin-top: 4px; font-weight: 400; }
+  .q-divider { height: 1px; background: var(--border); margin: 26px 0; }
+
+  /* CHECKBOXES */
+  .check-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .check-item {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--off-white); border: 1.5px solid var(--border);
+    border-radius: 10px; padding: 11px 14px; cursor: pointer;
+    transition: all 0.14s ease; user-select: none;
+  }
+  .check-item:hover { border-color: var(--pine-mint); background: var(--pine-mint-light); }
+  .check-item.selected { border-color: var(--pine-mint); background: var(--pine-mint-light); }
+  .check-box {
+    width: 18px; height: 18px; border: 1.5px solid #aac8b8; border-radius: 5px;
+    flex-shrink: 0; position: relative; background: white; transition: all 0.14s;
+  }
+  .check-item.selected .check-box { background: var(--pine-mint); border-color: var(--pine-mint); }
+  .check-item.selected .check-box::after {
+    content: ''; position: absolute; top: 2px; left: 5px;
+    width: 5px; height: 8px; border: 2px solid var(--pine-green);
+    border-top: none; border-left: none; transform: rotate(45deg);
+  }
+  .check-label { font-size: 13px; font-weight: 500; color: var(--text-sub); line-height: 1.3; flex: 1; }
+  .check-item.selected .check-label { color: var(--pine-green); font-weight: 600; }
+  .other-input {
+    margin-top: 8px; padding: 11px 14px; border: 1.5px solid var(--border); border-radius: 10px;
+    font-family: 'Inter', sans-serif; font-size: 14px; width: 100%;
+    color: var(--text-dark); background: var(--off-white); outline: none;
+    transition: border-color 0.14s; display: none;
+  }
+  .other-input:focus { border-color: var(--border-focus); }
+  .other-input.visible { display: block; }
+  .other-input::placeholder { color: var(--text-muted); }
+
+  /* RADIO PILLS */
+  .radio-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .radio-pill {
+    flex: 1; min-width: 100px; display: flex; align-items: center; justify-content: center;
+    border: 1.5px solid var(--border); border-radius: 10px; padding: 13px 16px;
+    cursor: pointer; transition: all 0.14s; background: var(--off-white);
+    font-size: 14px; font-weight: 600; color: var(--text-muted);
+    user-select: none; text-align: center; line-height: 1.3;
+  }
+  .radio-pill:hover { border-color: var(--pine-mint); color: var(--pine-green); background: var(--pine-mint-light); }
+  .radio-pill.selected { border-color: var(--pine-green); background: var(--pine-green); color: var(--white); }
+
+  /* SCALE */
+  .scale-row { display: flex; gap: 8px; }
+  .scale-btn {
+    flex: 1; aspect-ratio: 1; max-width: 90px; border: 1.5px solid var(--border); border-radius: 10px;
+    background: var(--off-white); font-size: 18px; font-weight: 700; color: var(--text-muted);
+    cursor: pointer; transition: all 0.14s; display: flex; align-items: center; justify-content: center;
+  }
+  .scale-btn:hover { border-color: var(--pine-mint); color: var(--pine-green); transform: translateY(-2px); background: var(--pine-mint-light); }
+  .scale-btn.selected { background: var(--pine-green); border-color: var(--pine-green); color: var(--pine-mint); transform: translateY(-4px); box-shadow: 0 6px 18px rgba(0,51,35,0.22); }
+  .scale-labels { display: flex; justify-content: space-between; margin-top: 10px; font-size: 11px; color: var(--text-muted); font-weight: 500; }
+
+  /* TEXT INPUTS */
+  .text-area, .text-input {
+    width: 100%; border: 1.5px solid var(--border); border-radius: 10px;
+    padding: 13px 16px; font-family: 'Inter', sans-serif; font-size: 14px;
+    color: var(--text-dark); background: var(--off-white); outline: none; transition: border-color 0.14s;
+  }
+  .text-area { resize: vertical; min-height: 88px; }
+  .text-area:focus, .text-input:focus { border-color: var(--border-focus); background: white; }
+  .text-area::placeholder, .text-input::placeholder { color: var(--text-muted); }
+
+  /* CONDITIONAL */
+  .conditional {
+    background: var(--pine-mint-light); border: 1px solid var(--pine-mint-bd);
+    border-left: 3px solid var(--pine-mint); border-radius: 12px;
+    padding: 18px 20px; margin-top: 14px; display: none;
+  }
+  .conditional.visible { display: block; animation: fadeUp 0.2s ease; }
+
+  /* NAV BAR */
+  .nav-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 40px; border-top: 1px solid var(--border); background: var(--white);
+  }
+  .btn-back {
+    background: transparent; border: 1.5px solid var(--border); border-radius: 10px;
+    padding: 12px 24px; font-family: 'Inter', sans-serif; font-size: 14px;
+    font-weight: 600; color: var(--text-muted); cursor: pointer; transition: all 0.14s;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .btn-back:hover { border-color: var(--pine-green); color: var(--pine-green); }
+  .btn-next {
+    background: var(--pine-green); border: none; border-radius: 10px;
+    padding: 13px 32px; font-family: 'Inter', sans-serif; font-size: 14px;
+    font-weight: 700; color: var(--white); cursor: pointer; transition: all 0.14s;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .btn-next:hover { background: var(--pine-green-mid); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,51,35,0.25); }
+  .btn-next:active { transform: translateY(0); }
+  .btn-next.submit-btn { background: var(--pine-mint); color: var(--pine-green); }
+  .btn-next.submit-btn:hover { background: #3ec474; box-shadow: 0 6px 20px rgba(80,211,135,0.35); }
+  .btn-next svg, .btn-back svg { width: 16px; height: 16px; flex-shrink: 0; }
+  .btn-next:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+  /* SUBMITTING SPINNER */
+  .spinner {
+    width: 16px; height: 16px; border: 2px solid rgba(0,51,35,0.3);
+    border-top-color: var(--pine-green); border-radius: 50%;
+    animation: spin 0.7s linear infinite; flex-shrink: 0;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* THANK YOU */
+  .thankyou { display: none; flex-direction: column; align-items: center; text-align: center; padding: 56px 40px 60px; gap: 16px; }
+  .thankyou.active { display: flex; animation: fadeUp 0.35s ease; }
+  .trophy-ring {
+    width: 96px; height: 96px; background: var(--pine-mint-light); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; font-size: 46px;
+    border: 2px solid var(--pine-mint-bd); margin-bottom: 4px;
+  }
+  .thankyou h2 { font-size: 28px; font-weight: 800; color: var(--pine-green); letter-spacing: -0.4px; }
+  .thankyou .ty-sub { font-size: 15px; color: var(--text-sub); max-width: 360px; line-height: 1.7; }
+  .prize-chip { background: var(--pine-green); color: var(--pine-mint); border-radius: 20px; padding: 10px 24px; font-size: 13px; font-weight: 700; }
+  .ty-brand { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+  .ty-brand strong { color: var(--pine-green); }
+
+  /* ERROR TOAST */
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    background: #c0392b; color: white; border-radius: 10px; padding: 12px 24px;
+    font-size: 14px; font-weight: 600; z-index: 999; display: none;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  }
+  .toast.visible { display: block; animation: fadeUp 0.2s ease; }
+
+  /* CONTACT */
+  .contact-grid { display: grid; gap: 16px; }
+  .field-label { font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 8px; letter-spacing: 0.3px; text-transform: uppercase; }
+  .optional-note { font-size: 11px; color: var(--text-muted); margin-top: 6px; }
+
+  @media (max-width: 520px) {
+    .check-grid { grid-template-columns: 1fr; }
+    .card-body, .card-header, .nav-bar { padding-left: 20px; padding-right: 20px; }
+    header, .prize-banner, .progress-wrap { padding-left: 20px; padding-right: 20px; }
+    .scale-btn { font-size: 16px; }
+    .radio-pill { font-size: 13px; padding: 11px 12px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ─────────────────────────────────────────────
+  PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL BELOW
+  (after deploying — see SETUP.md for instructions)
+───────────────────────────────────────────── -->
+<script>
+  const APPS_SCRIPT_URL = "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE";
+</script>
+
+<header>
+  <div class="logo">
+    <svg class="logo-icon" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="32" height="32" rx="6" fill="#50D387"/>
+      <rect x="6" y="6" width="8" height="8" rx="1.5" fill="#003323"/>
+      <rect x="18" y="6" width="8" height="8" rx="1.5" fill="#003323" opacity="0.55"/>
+      <rect x="6" y="18" width="8" height="8" rx="1.5" fill="#003323" opacity="0.55"/>
+      <rect x="18" y="18" width="8" height="8" rx="1.5" fill="#003323" opacity="0.25"/>
+    </svg>
+    <span class="logo-text">pine<em>labs</em></span>
+  </div>
+  <span class="expo-tag">Franchise India Expo 2025</span>
+</header>
+
+<div class="prize-banner">
+  <p>🏆 &nbsp; Complete this survey &amp; stand a chance to win a <strong>MacBook Pro!</strong></p>
+</div>
+
+<div class="progress-wrap">
+  <span class="progress-label" id="stepCount">Step 1 of 6</span>
+  <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressBar" style="width:17%"></div></div>
+  <span class="section-label" id="sectionName">Payments</span>
+</div>
+
+<main>
+<div class="survey-card">
+
+  <!-- STEP 1 -->
+  <div class="step active" id="step-1">
+    <div class="card-header">
+      <span class="section-tag">Section 1 — Payments</span>
+      <h2>Your Current Payment Setup</h2>
+      <p>Help us understand how you accept payments today</p>
+    </div>
+    <div class="card-body">
+      <div class="q-block">
+        <div class="question-label">What payment options &amp; services do you currently offer?<div class="question-sub">Select all that apply</div></div>
+        <div class="check-grid" id="q1">
+          <div class="check-item" onclick="toggleCheck(this,'q1')"><div class="check-box"></div><span class="check-label">UPI</span></div>
+          <div class="check-item" onclick="toggleCheck(this,'q1')"><div class="check-box"></div><span class="check-label">Cash</span></div>
+          <div class="check-item" onclick="toggleCheck(this,'q1')"><div class="check-box"></div><span class="check-label">Credit Card</span></div>
+          <div class="check-item" onclick="toggleCheck(this,'q1')"><div class="check-box"></div><span class="check-label">Debit Card</span></div>
+          <div class="check-item" onclick="toggleCheck(this,'q1')"><div class="check-box"></div><span class="check-label">EMI on Card</span></div>
+          <div class="check-item" onclick="toggleCheck(this,'q1')"><div class="check-box"></div><span class="check-label">EMI on UPI</span></div>
+          <div class="check-item" onclick="toggleCheck(this,'q1')"><div class="check-box"></div><span class="check-label">Online Payment via Website</span></div>
+          <div class="check-item" onclick="toggleCheck(this,'q1')"><div class="check-box"></div><span class="check-label">Payment Links</span></div>
+          <div class="check-item" onclick="toggleCheck(this,'q1')"><div class="check-box"></div><span class="check-label">Buy Now Pay Later</span></div>
+        </div>
+      </div>
+      <div class="q-divider"></div>
+      <div class="q-block">
+        <div class="question-label">What POS device do you currently use?<div class="question-sub">Select all that apply</div></div>
+        <div class="check-grid" id="q2">
+          <div class="check-item" onclick="toggleCheck(this,'q2')"><div class="check-box"></div><span class="check-label">Pine Labs</span></div>
+          <div class="check-item" onclick="toggleCheck(this,'q2')"><div class="check-box"></div><span class="check-label">Razorpay</span></div>
+          <div class="check-item" onclick="toggleCheck(this,'q2')"><div class="check-box"></div><span class="check-label">MSwipe</span></div>
+          <div class="check-item" onclick="toggleCheck(this,'q2','posOtherInput')"><div class="check-box"></div><span class="check-label">Bank / Other</span></div>
+        </div>
+        <input type="text" class="other-input" id="posOtherInput" placeholder="Please mention the bank or device name…">
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="step" id="step-2">
+    <div class="card-header">
+      <span class="section-tag">Section 2 — Store Intelligence</span>
+      <h2>Understanding Your Customers</h2>
+      <p>Tell us about your customer insights &amp; store strategy</p>
+    </div>
+    <div class="card-body">
+      <div class="q-block">
+        <div class="question-label">Do you know which areas your customers prefer to shop in?<div class="question-sub">e.g. clothes in Chandni Chowk, accessories in Colaba Causeway, electronics in Khan Market</div></div>
+        <div class="radio-row" id="q3">
+          <div class="radio-pill" onclick="selectRadio(this,'q3')">Yes, I do</div>
+          <div class="radio-pill" onclick="selectRadio(this,'q3','showConditional3')">No</div>
+        </div>
+        <div class="conditional" id="showConditional3">
+          <div class="question-label" style="margin-bottom:14px;font-size:14px;">Would you like a tool that identifies customer hotspots before your next store launch?</div>
+          <div class="radio-row" id="q4">
+            <div class="radio-pill" onclick="selectRadio(this,'q4')">Yes, definitely!</div>
+            <div class="radio-pill" onclick="selectRadio(this,'q4')">Not right now</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="step" id="step-3">
+    <div class="card-header">
+      <span class="section-tag">Section 3 — Online Checkout</span>
+      <h2>Cart Abandonment &amp; Conversions</h2>
+      <p>Let's explore how your online checkout experience performs</p>
+    </div>
+    <div class="card-body">
+      <div class="q-block">
+        <div class="question-label">Does your website face cart abandonment issues due to your current checkout experience?</div>
+        <div class="radio-row" id="q5">
+          <div class="radio-pill" onclick="selectRadio(this,'q5')">Yes, it's a problem</div>
+          <div class="radio-pill" onclick="selectRadio(this,'q5')">No, it's fine</div>
+        </div>
+      </div>
+      <div class="q-divider"></div>
+      <div class="q-block">
+        <div class="question-label">Do you think offering EMI &amp; Buy Now Pay Later would increase your average ticket value?</div>
+        <div class="radio-row" id="q6">
+          <div class="radio-pill" onclick="selectRadio(this,'q6')">Yes, definitely</div>
+          <div class="radio-pill" onclick="selectRadio(this,'q6')">Maybe</div>
+          <div class="radio-pill" onclick="selectRadio(this,'q6')">Not sure</div>
+        </div>
+      </div>
+      <div class="q-divider"></div>
+      <div class="q-block">
+        <div class="question-label">On a scale of 1–5, how likely would a <em>customised checkout experience</em> reduce cart abandonment &amp; drive higher cart value?</div>
+        <div class="scale-row" id="q7">
+          <div class="scale-btn" onclick="selectScale(this,'q7')">1</div>
+          <div class="scale-btn" onclick="selectScale(this,'q7')">2</div>
+          <div class="scale-btn" onclick="selectScale(this,'q7')">3</div>
+          <div class="scale-btn" onclick="selectScale(this,'q7')">4</div>
+          <div class="scale-btn" onclick="selectScale(this,'q7')">5</div>
+        </div>
+        <div class="scale-labels"><span>Not likely at all</span><span>Extremely likely</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="step" id="step-4">
+    <div class="card-header">
+      <span class="section-tag">Section 4 — Loyalty &amp; Retention</span>
+      <h2>Grow &amp; Retain Your Customer Base</h2>
+      <p>Understanding your retention &amp; loyalty strategy</p>
+    </div>
+    <div class="card-body">
+      <div class="q-block">
+        <div class="question-label">Is your brand currently more focused on…</div>
+        <div class="radio-row" id="q8">
+          <div class="radio-pill" onclick="selectRadio(this,'q8')">Retaining existing customers</div>
+          <div class="radio-pill" onclick="selectRadio(this,'q8')">Acquiring new customers</div>
+          <div class="radio-pill" onclick="selectRadio(this,'q8')">Equal focus on both</div>
+        </div>
+      </div>
+      <div class="q-divider"></div>
+      <div class="q-block">
+        <div class="question-label">Do you think a loyalty program would help with customer retention?</div>
+        <div class="radio-row" id="q9">
+          <div class="radio-pill" onclick="selectRadio(this,'q9')">Yes</div>
+          <div class="radio-pill" onclick="selectRadio(this,'q9')">No</div>
+          <div class="radio-pill" onclick="selectRadio(this,'q9')">Not sure</div>
+        </div>
+      </div>
+      <div class="q-divider"></div>
+      <div class="q-block">
+        <div class="question-label">Do you already have a loyalty program in place?<div class="question-sub">If yes, briefly describe it</div></div>
+        <div class="radio-row" id="q10">
+          <div class="radio-pill" onclick="selectRadio(this,'q10','showLoyaltyInput')">Yes</div>
+          <div class="radio-pill" onclick="selectRadio(this,'q10')">No</div>
+        </div>
+        <div class="conditional" id="showLoyaltyInput">
+          <div class="question-label" style="margin-bottom:10px;font-size:13px;">Tell us about your current program</div>
+          <textarea class="text-area" id="loyaltyDesc" placeholder="e.g. Points-based, membership tiers, discounts on repeat purchase…"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 5 -->
+  <div class="step" id="step-5">
+    <div class="card-header">
+      <span class="section-tag">Section 5 — Business Analytics</span>
+      <h2>Real-Time Store Insights</h2>
+      <p>Let's understand your current visibility into store performance</p>
+    </div>
+    <div class="card-body">
+      <div class="q-block">
+        <div class="question-label">Do you currently have a real-time consolidated view of your store-level metrics?<div class="question-sub">Such as pilferage, customer transactions, revenue, feedback &amp; inventory status</div></div>
+        <div class="radio-row" id="q11">
+          <div class="radio-pill" onclick="selectRadio(this,'q11')">Yes, I do</div>
+          <div class="radio-pill" onclick="selectRadio(this,'q11')">Partially</div>
+          <div class="radio-pill" onclick="selectRadio(this,'q11')">No, I don't</div>
+        </div>
+      </div>
+      <div class="q-divider"></div>
+      <div class="q-block">
+        <div class="question-label">Would you like a unified dashboard that brings all these insights together &amp; improves overall business performance?</div>
+        <div class="radio-row" id="q12">
+          <div class="radio-pill" onclick="selectRadio(this,'q12')">Yes, absolutely!</div>
+          <div class="radio-pill" onclick="selectRadio(this,'q12')">Maybe later</div>
+          <div class="radio-pill" onclick="selectRadio(this,'q12')">Not interested</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 6 -->
+  <div class="step" id="step-6">
+    <div class="card-header">
+      <span class="section-tag">Section 6 — Almost There!</span>
+      <h2>Your Contact Details</h2>
+      <p>Enter your details to be entered in the MacBook Pro draw 🏆</p>
+    </div>
+    <div class="card-body">
+      <div class="contact-grid">
+        <div><div class="field-label">Full Name *</div><input type="text" class="text-input" id="fname" placeholder="e.g. Riya Sharma"></div>
+        <div><div class="field-label">Mobile Number *</div><input type="tel" class="text-input" id="fphone" placeholder="e.g. 9876543210"></div>
+        <div><div class="field-label">Business / Brand Name *</div><input type="text" class="text-input" id="fbusiness" placeholder="e.g. Sharma Retail Pvt. Ltd."></div>
+        <div>
+          <div class="field-label">Email Address</div>
+          <input type="email" class="text-input" id="femail" placeholder="e.g. riya@yourcompany.com">
+          <p class="optional-note">Optional — required to receive follow-ups from Pine Labs</p>
+        </div>
+        <div><div class="field-label">City</div><input type="text" class="text-input" id="fcity" placeholder="e.g. Mumbai"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- THANK YOU -->
+  <div class="thankyou" id="thankyou">
+    <div class="trophy-ring">🏆</div>
+    <h2>Thank you!</h2>
+    <p class="ty-sub">Your response has been recorded. You're now entered into the draw for a <strong>MacBook Pro</strong>. Our team will be in touch soon!</p>
+    <div class="prize-chip">🎁 &nbsp; MacBook Pro Draw — Franchise India Expo 2025</div>
+    <p class="ty-brand">Powered by <strong>Pine Labs</strong> — Smarter Commerce for Every Business</p>
+    <button class="btn-next submit-btn" onclick="resetSurvey()" style="margin-top:12px;">
+      Start New Response
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+    </button>
+  </div>
+
+  <!-- NAV -->
+  <div class="nav-bar" id="navBar">
+    <button class="btn-back" onclick="prevStep()" id="btnBack" style="visibility:hidden">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      Back
+    </button>
+    <button class="btn-next" onclick="nextStep()" id="btnNext">
+      Continue
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+    </button>
+  </div>
+
+</div>
+</main>
+
+<div class="toast" id="toast">⚠️ Submission failed. Please try again.</div>
+
+<script>
+  const TOTAL = 6;
+  const SECTIONS = ['Payments','Store Intel','Checkout','Loyalty','Analytics','Contact'];
+  let cur = 1;
+
+  // ── Collect all answers into a flat object ──
+  function collectData() {
+    const getChecked = (id) =>
+      [...document.querySelectorAll(`#${id} .check-item.selected .check-label`)]
+        .map(el => el.textContent.trim());
+
+    const getRadio = (id) => {
+      const sel = document.querySelector(`#${id} .radio-pill.selected`);
+      return sel ? sel.textContent.trim() : "";
+    };
+
+    const getScale = (id) => {
+      const sel = document.querySelector(`#${id} .scale-btn.selected`);
+      return sel ? sel.textContent.trim() : "";
+    };
+
+    return {
+      fname:       document.getElementById('fname').value.trim(),
+      fphone:      document.getElementById('fphone').value.trim(),
+      fbusiness:   document.getElementById('fbusiness').value.trim(),
+      femail:      document.getElementById('femail').value.trim(),
+      fcity:       document.getElementById('fcity').value.trim(),
+      q1:          getChecked('q1'),
+      q2:          getChecked('q2'),
+      posOther:    document.getElementById('posOtherInput').value.trim(),
+      q3:          getRadio('q3'),
+      q4:          getRadio('q4'),
+      q5:          getRadio('q5'),
+      q6:          getRadio('q6'),
+      q7:          getScale('q7'),
+      q8:          getRadio('q8'),
+      q9:          getRadio('q9'),
+      q10:         getRadio('q10'),
+      loyaltyDesc: document.getElementById('loyaltyDesc').value.trim(),
+      q11:         getRadio('q11'),
+      q12:         getRadio('q12'),
+    };
+  }
+
+  // ── Send to Google Sheets via Apps Script ──
+  async function submitToSheets(data) {
+    if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE") {
+      console.warn("No Apps Script URL set — skipping submission.");
+      return true; // still show thank-you in demo mode
+    }
+    const resp = await fetch(APPS_SCRIPT_URL, {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: { "Content-Type": "text/plain" }, // text/plain avoids CORS preflight
+    });
+    const json = await resp.json();
+    return json.status === "success";
+  }
+
+  // ── Step navigation ──
+  function showStep(n) {
+    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+    const el = document.getElementById('step-' + n);
+    if (el) el.classList.add('active');
+    document.getElementById('thankyou').classList.remove('active');
+    document.getElementById('navBar').style.display = 'flex';
+    document.getElementById('progressBar').style.width = Math.round((n / TOTAL) * 100) + '%';
+    document.getElementById('stepCount').textContent = 'Step ' + n + ' of ' + TOTAL;
+    document.getElementById('sectionName').textContent = SECTIONS[n - 1] || '';
+    document.getElementById('btnBack').style.visibility = n > 1 ? 'visible' : 'hidden';
+    const btn = document.getElementById('btnNext');
+    if (n === TOTAL) {
+      btn.innerHTML = 'Submit &amp; Enter Draw <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:16px;height:16px;flex-shrink:0"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+      btn.classList.add('submit-btn');
+    } else {
+      btn.innerHTML = 'Continue <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:16px;height:16px;flex-shrink:0"><polyline points="9 18 15 12 9 6"></polyline></svg>';
+      btn.classList.remove('submit-btn');
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function nextStep() {
+    if (cur === TOTAL) { handleSubmit(); return; }
+    cur++;
+    showStep(cur);
+  }
+
+  function prevStep() { if (cur > 1) { cur--; showStep(cur); } }
+
+  // ── Validate Step 6 (contact) ──
+  function validateContact() {
+    const name  = document.getElementById('fname').value.trim();
+    const phone = document.getElementById('fphone').value.trim();
+    const biz   = document.getElementById('fbusiness').value.trim();
+    if (!name)  { document.getElementById('fname').focus();     return false; }
+    if (!phone) { document.getElementById('fphone').focus();    return false; }
+    if (!biz)   { document.getElementById('fbusiness').focus(); return false; }
+    return true;
+  }
+
+  // ── Handle final submit ──
+  async function handleSubmit() {
+    if (!validateContact()) {
+      showToast("Please fill in Name, Mobile and Business Name to continue.");
+      return;
+    }
+    const btn = document.getElementById('btnNext');
+    btn.disabled = true;
+    btn.innerHTML = '<div class="spinner"></div> Submitting…';
+
+    const data = collectData();
+    try {
+      const ok = await submitToSheets(data);
+      if (ok) {
+        showThankyou();
+      } else {
+        showToast("Submission failed. Please check your connection and try again.");
+        btn.disabled = false;
+        btn.innerHTML = 'Submit &amp; Enter Draw <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:16px;height:16px;flex-shrink:0"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+      }
+    } catch (err) {
+      showToast("Network error. Please try again.");
+      btn.disabled = false;
+      btn.innerHTML = 'Submit &amp; Enter Draw <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:16px;height:16px;flex-shrink:0"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+    }
+  }
+
+  function showThankyou() {
+    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+    document.getElementById('thankyou').classList.add('active');
+    document.getElementById('navBar').style.display = 'none';
+    document.getElementById('progressBar').style.width = '100%';
+    document.getElementById('stepCount').textContent = 'Complete!';
+    document.getElementById('sectionName').textContent = 'Done ✓';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = '⚠️ ' + msg;
+    t.classList.add('visible');
+    setTimeout(() => t.classList.remove('visible'), 4000);
+  }
+
+  function resetSurvey() {
+    cur = 1;
+    document.querySelectorAll('.check-item').forEach(i => i.classList.remove('selected'));
+    document.querySelectorAll('.radio-pill').forEach(i => i.classList.remove('selected'));
+    document.querySelectorAll('.scale-btn').forEach(i => i.classList.remove('selected'));
+    document.querySelectorAll('.conditional').forEach(i => i.classList.remove('visible'));
+    document.querySelectorAll('.other-input').forEach(i => { i.classList.remove('visible'); i.value = ''; });
+    document.querySelectorAll('input, textarea').forEach(i => i.value = '');
+    document.getElementById('thankyou').classList.remove('active');
+    document.getElementById('navBar').style.display = 'flex';
+    const btn = document.getElementById('btnNext');
+    btn.disabled = false;
+    showStep(1);
+  }
+
+  // ── UI helpers ──
+  function toggleCheck(el, groupId, otherId) {
+    el.classList.toggle('selected');
+    if (otherId) {
+      const inp = document.getElementById(otherId);
+      if (inp) { inp.classList.toggle('visible', el.classList.contains('selected')); if (!el.classList.contains('selected')) inp.value = ''; }
+    }
+  }
+
+  function selectRadio(el, groupId, conditionalId) {
+    document.getElementById(groupId).querySelectorAll('.radio-pill').forEach(p => p.classList.remove('selected'));
+    el.classList.add('selected');
+    const condMap = { q3: 'showConditional3', q10: 'showLoyaltyInput' };
+    const relCond = condMap[groupId];
+    if (relCond) document.getElementById(relCond).classList.toggle('visible', !!conditionalId);
+  }
+
+  function selectScale(el, groupId) {
+    document.getElementById(groupId).querySelectorAll('.scale-btn').forEach(b => b.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  showStep(1);
+</script>
+</body>
+</html>
